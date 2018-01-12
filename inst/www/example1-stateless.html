@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Multiple file upload example</title>
+<title>example</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
@@ -23,8 +23,8 @@
 $("#submitbutton").on("click", function(){
 
     //arguments
-    var rownames = $("#rownames").val();
-    var colnames = $("#colnames").val();
+    var rownames = new ocpu.Snippet($("#rownames").val());
+    var colnames = new ocpu.Snippet($("#colnames").val());
 
     //perform the request
     var req = ocpu.call("example1", {
@@ -40,18 +40,13 @@ $("#submitbutton").on("click", function(){
     req.fail(function(){
         alert("Server error: " + req.responseText);
     });
-
-    //after request complete, re-enable the button
-    req.always(function(){
-        $("#submitbutton").removeAttr("disabled")
-    });
 });
 </script>
 
 </head>
 <body>
 
-<h1>Multiple input example</h1>
+<h1>Multiple input example using code snippet</h1>
 
 <p>
 Copy-paste rownames:
