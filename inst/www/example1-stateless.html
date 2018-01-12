@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Multiple file upload example</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<script src="assets/jquery-1.11.1.min.js"></script>
+<script src="assets/opencpu-0.4.js"></script>
+
+<!--
+<link href="assets/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="assets/jquery-ui.min.css" rel="stylesheet" media="screen">
+
+<script src="assets/bootstrap.min.js"></script>
+<script src="assets/jquery-ui.min.js"></script>
+-->
+
+<script>
+//ocpu.seturl("//sc-dev.abmi.ca/ocpu/library/ocpuapps/R")
+
+//actual handler
+$("#submitbutton").on("click", function(){
+
+    //arguments
+    var rownames = $("#rownames").val();
+    var colnames = $("#colnames").val();
+
+    //perform the request
+    var req = ocpu.call("example1", {
+        "id1" : rownames,
+        "id2" : colnames
+    }, function(session){
+        session.getConsole(function(outtxt){
+            $("#output").text(outtxt);
+        });
+    });
+
+    //if R returns an error, alert the error message
+    req.fail(function(){
+        alert("Server error: " + req.responseText);
+    });
+
+    //after request complete, re-enable the button
+    req.always(function(){
+        $("#submitbutton").removeAttr("disabled")
+    });
+});
+</script>
+
+</head>
+<body>
+
+<h1>Multiple input example</h1>
+
+<p>
+Copy-paste rownames:
+<br />
+<textarea id="rownames" rows="5" cols="50"></textarea>
+</p>
+
+<p>
+Copy-paste colnames:
+<br />
+<textarea id="colnames" rows="5" cols="50"></textarea>
+</p>
+
+<p>
+<button id="submitbutton" type="button">Submit</button>
+</p>
+
+<p>
+<pre><code id="output"></code></pre>
+</p>
+
+</body>
+</html>

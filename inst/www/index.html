@@ -1,126 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Custom Reporting for Intactness and Sector Effects</title>
+<title>Multiple file upload example</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
 <script src="assets/jquery-1.11.1.min.js"></script>
 <script src="assets/opencpu-0.4.js"></script>
 
+<!--
 <link href="assets/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="assets/jquery-ui.min.css" rel="stylesheet" media="screen">
 
 <script src="assets/bootstrap.min.js"></script>
 <script src="assets/jquery-ui.min.js"></script>
+-->
 
+<scrip>
+//ocpu.seturl("//sc-dev.abmi.ca/ocpu/library/ocpuapps/R")
+
+//actual handler
+$("#submitbutton1").on("click", function(){
+
+    //arguments
+    var myheader1 = $("#header1").val() == "true";
+    var myfile1 = $("#csvfile1")[0].files[0];
+
+    if (!myfile) {
+        alert("No file selected.");
+        return;
+    }
+
+    //disable the button during upload
+    $("#submitbutton1").attr("disabled", "disabled");
+
+    //perform the request
+    var req1 = ocpu.call("read.csv", {
+        "file" : myfile1,
+        "header" : myheader1
+    }, function(session){
+        session.getConsole(function(outtxt){
+            $("#output").text(outtxt);
+        });
+    });
+
+    //if R returns an error, alert the error message
+    req.fail(function(){
+        alert("Server error: " + req.responseText);
+    });
+
+    //after request complete, re-enable the button
+    req1.always(function(){
+        $("#submitbutton1").removeAttr("disabled")
+    });
+});
+
+//Chaining function calls
+
+//global var
+var mysession;
+
+//calls R function: stats::rnorm(n=100, mean=runif(1)):
+$("#postbutton").click(function(){
+    var rnd = Math.random();
+    var req = ocpu.call("rnorm", {n: 100, mean:rnd}, function(session){
+        //assign to global var
+        mysession = session;
+
+        //read the session properties (just for fun)
+        $("#key").text(mysession.getKey());
+        $("#location").text(mysession.getLoc());
+
+        //retrieve session console (async)
+        mysession.getConsole(function(outtxt){
+            $("#output").text(outtxt);
+        });
+
+        //enable the other button
+        $("#getbutton").removeAttr("disabled");
+    }).fail(function(){
+        alert("Error: " + req.responseText);
+    });
+});
+
+$("#getbutton").click(function(){
+    //retrieve object (async)
+    mysession.getObject(function(data){
+        //data is the object returned by the R function
+        alert("Array of length " + data.length + ".\nFirst few values:" + data.slice(0,3));
+    });
+});
+
+</scrip>
 
 </head>
 <body>
-  <div class="container">
 
-    <div class="page-header">
-      <h1>Custom Reporting for Intactness and Sector Effects</h1>
-    </div>
+<h1>Multiple file upload example</h1>
 
-    <div class="row">
+<p>Upload 2 files that define rownames and colnames of a matrix
+(filled with some numbers). This file then gets sent to an email
+address using the sendmaolR package.</p>
 
-        <h2>Step 1: Select spatial IDs</h2>
+<h3>Step 1: upload file with rownames</h3>
 
-        CSV file with spatial IDs in 1st column
-        <button type="button" class="btn btn-primary" id="csvfile_id">Upload</button>
-        <input type="file" id="csvfile1">
-        <br />
-        Header <select id="header1">
-        <option>true</option>
-        <option>false</option>
-        </select>
-        <br />
+<p>
+CSV File 1 <input type="file" id="csvfile1">
+<br />
 
-        <h2>Step 2: Select species</h2>
+Header <select id="header1">
+<option>true</option>
+<option>false</option>
+</select>
+<br />
 
-        CSV file with species IDs in 1st column
-        <button type="button" class="btn btn-primary" id="csvfile_species">Upload</button>
-        <input type="file" id="csvfile2">
-        <br />
-        Header <select id="header2">
-        <option>true</option>
-        <option>false</option>
-        </select>
-        <br />
+<button id="submitbutton1" type="button">Upload</button>
+</p>
 
-        <h2>Step 3: Provide e-mail address</h2>
+<h3>Step 2: upload file with colnames</h3>
 
-<form>
+<p>
+CSV File 2 <input type="file" id="csvfile2">
+<br />
 
-  <div class="form-group row">
-    <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
-    <div class="col-sm-10">
-      <input type="email" class="form-control" id="inputEmail" placeholder="Email">
-    </div>
-  </div>
+Header <select id="header2">
+<option>true</option>
+<option>false</option>
+</select>
+<br />
 
-  <fieldset class="form-group">
-    <div class="row">
-      <legend class="col-form-label col-sm-2 pt-0">Radios</legend>
-      <div class="col-sm-10">
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
-          <label class="form-check-label" for="gridRadios1">
-            First radio
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
-          <label class="form-check-label" for="gridRadios2">
-            Second radio
-          </label>
-        </div>
-        <div class="form-check disabled">
-          <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios3" value="option3" disabled>
-          <label class="form-check-label" for="gridRadios3">
-            Third disabled radio
-          </label>
-        </div>
-      </div>
-    </div>
-  </fieldset>
+<button id="submitbutton2" type="button">Upload</button>
+</p>
 
-  <div class="form-group row">
-    <div class="col-sm-2">Checkbox</div>
-    <div class="col-sm-10">
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="gridCheck1">
-        <label class="form-check-label" for="gridCheck1">
-          Example checkbox
-        </label>
-      </div>
-    </div>
-  </div>
+<h3>Step 3: give an email address and submit</h3>
 
-  <div class="form-group row">
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Upload</span>
-      </div>
-      <label class="custom-file">
-        <input type="file" id="inputGroupFile01" class="custom-file-input" required>
-        <span class="custom-file-control"></span>
-      </label>
-    </div>
-  </div>
+<p>
+<textarea id="emailinput" rows="1" cols="20"></textarea>
+<br />
 
-  <div class="form-group row">
-    <div class="col-sm-10">
-      <button type="submit" class="btn btn-primary">Sign in</button>
-    </div>
-  </div>
+<button id="submitbutton3" type="button">Submit</button>
+</p>
 
-</form>
+<p>
+<pre><code id="output"></code></pre>
+</p>
 
-
-    </div>
-
-  </div>
 </body>
 </html>
