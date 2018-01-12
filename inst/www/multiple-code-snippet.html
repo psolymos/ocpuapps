@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>multiple code snippet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<script src="assets/jquery-1.11.1.min.js"></script>
+<script src="assets/opencpu-0.4.min.js"></script>
+
+</head>
+<body>
+
+<h1>Multiple input example using code snippet</h1>
+
+Copy-paste rownames:
+<br />
+<textarea id="rownames" rows="1" cols="50">c("A", "B", "C")</textarea>
+<br />
+<br />
+
+Copy-paste colnames:
+<br />
+<textarea id="colnames" rows="1" cols="50">c("a", "b")</textarea>
+<br />
+<br />
+
+<button id="submitbutton" type="button">Submit</button>
+<br />
+
+Console:
+<br />
+<pre><code id="output1"></code></pre>
+<br />
+
+Stdout:
+<br />
+<pre><code id="output2"></code></pre>
+<br />
+
+Object:
+<br />
+<pre><code id="output3"></code></pre>
+<br />
+
+<script>
+ocpu.seturl("http://sc-dev.abmi.ca/ocpu/library/ocpuapps/R")
+
+//actual handler
+$("#submitbutton").on("click", function(){
+
+    //arguments
+    var id1 = new ocpu.Snippet($("#rownames").val());
+    console.log("id1 defined");
+    var id2 = new ocpu.Snippet($("#colnames").val());
+    console.log("id2 defined");
+
+    //disable button
+    $("button").attr("disabled", "disabled");
+
+    //perform the request
+    var req = ocpu.call("example1", {
+        "id1" : id1,
+        "id2" : id2
+    }, function(session){
+        session.getConsole(function(outtxt){
+            $("#output1").text(outtxt);
+        });
+        console.log("console output written");
+
+        session.getStdout(function(outtxt){
+            $("#output2").text(outtxt);
+        });
+        console.log("stdout output written");
+
+        // ways of showing the data
+        session.getObject(function(session){
+            $("#output3").text(session);
+        });
+        session.getObject(function(data){
+            console.log(data);
+            alert("Object data: " + data);
+        });
+    });
+
+    //if R returns an error, alert the error message
+    req.fail(function(){
+        alert("Server error: " + req.responseText);
+    });
+
+    //enable button
+    req.always(function(){
+        $("button").removeAttr("disabled");
+    });
+
+});
+</script>
+
+</body>
+</html>

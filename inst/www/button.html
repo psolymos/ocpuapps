@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>button</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<script src="assets/jquery-1.11.1.min.js"></script>
+
+<script>
+$(document).ready(function () {
+  $("#btnInDiv").click(
+    function () {
+      alert("Submit in Div");
+    }
+  );
+  $("#btnInBtn").click(
+    function () {
+      alert("Submit in Button");
+    }
+  );
+});
+$("#btnInDiv2").click(
+  function () {
+    alert("Submit in Div 2");
+  }
+);
+$("#btnInBtn2").click(
+  function () {
+    alert("Submit in Button 2");
+  }
+);
+</script>
+
+</head>
+<body>
+
+  <h1>Click a button</h1>
+
+Why do we need to enclose <code>$.click()</code>
+inside <code>$(document).ready()</code>,
+or put the script at the end of the doc explained
+<a href="https://stackoverflow.com/questions/10092762/why-should-click-be-enclosed-within-document-ready">here</a>
+
+<h2>Inside $document, defined in the head<h2>
+
+<div id="btnInDiv">
+  <button type="button">Submit in Div</button>
+</div>
+<br />
+<button id="btnInBtn">Submit in Button</button>
+
+<h2>Outside $document, defined in the head - will not work<h2>
+
+<div id="btnInDiv2">
+  <button type="button">Submit in Div 2</button>
+</div>
+<br />
+<button id="btnInBtn2">Submit in Button 2</button>
+
+<h2>Outside $document, defined in the body<h2>
+
+<div id="btnInDiv3">
+  <button type="button">Submit in Div 3</button>
+</div>
+<br />
+<button id="btnInBtn3">Submit in Button 3</button>
+
+<script>
+$("#btnInDiv3").click(
+  function () {
+    alert("Submit in Div 3");
+  }
+);
+$("#btnInBtn3").click(
+  function () {
+    alert("Submit in Button 3");
+  }
+);
+</script>
+
+</body>
+</html>
