@@ -23,13 +23,16 @@
 $("#submitbutton").on("click", function(){
 
     //arguments
-    var rownames = new ocpu.Snippet($("#rownames").val());
-    var colnames = new ocpu.Snippet($("#colnames").val());
+    var id1 = new ocpu.Snippet($("#rownames").val());
+    var id2 = new ocpu.Snippet($("#colnames").val());
+
+    //disable button
+    $("button").attr("disabled", "disabled");
 
     //perform the request
     var req = ocpu.call("example1", {
-        "id1" : rownames,
-        "id2" : colnames
+        "id1" : id1,
+        "id2" : id2
     }, function(session){
         session.getConsole(function(outtxt){
             $("#output").text(outtxt);
@@ -40,6 +43,12 @@ $("#submitbutton").on("click", function(){
     req.fail(function(){
         alert("Server error: " + req.responseText);
     });
+
+    //enable button
+    req.always(function(){
+        $("button").removeAttr("disabled");
+    });
+
 });
 </script>
 
