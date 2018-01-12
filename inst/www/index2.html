@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>example</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://cdn.opencpu.org/opencpu-0.4.js"></script>
+
+<script>
+//because identity is in base
+ocpu.seturl("http://cloud.opencpu.org/ocpu/library/base/R")
+
+//actual handler
+$("#submitbutton").on("click", function(){
+
+    //arguments
+    var mysnippet = new ocpu.Snippet($("#input").val());
+
+    //disable button
+    $("button").attr("disabled", "disabled");
+
+    //perform the request
+    var req = ocpu.rpc("do.call", {
+        what : mysnippet,
+        args : {
+            x : [1,2,3,4,5],
+            n : 3
+        }
+    }, function(output){
+      $("#output").text(output);
+    });
+
+    //if R returns an error, alert the error message
+    req.fail(function(){
+        alert("Server error: " + req.responseText);
+    });
+
+    req.always(function(){
+        $("button").removeAttr("disabled");
+    });
+});
+</script>
+
+</head>
+<body>
+
+  <h1>Run Arbitrary Function</h1>
+
+  <p>Use <tt>base::do.call</tt> to create and call an arbitrary function.<p>
+
+  <textarea id="input" rows="4" cols="50">
+  function(x, n){
+    return(x^n)
+  }
+  </textarea>
+
+  <br /> <button id="submitbutton" type="button">Call R</button>
+
+  <pre><code id="output"></code></pre>
+
+</body>
+</html>

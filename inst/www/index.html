@@ -5,10 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<script type='text/javascript' src="assets/jquery-1.10.2.min.js"></script>
-<script type='text/javascript' src="assets/opencpu-0.4.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.min.js">
+</script>
+<script src="http://cdn.opencpu.org/opencpu-0.4.js">
+</script>
+
 
 <!--
+<script type='text/javascript' src="assets/jquery-1.10.2.min.js"></script>
+<script type='text/javascript' src="assets/opencpu-0.4.js"></script>
 <link href="assets/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="assets/jquery-ui.min.css" rel="stylesheet" media="screen">
 
@@ -17,7 +22,7 @@
 -->
 
 <script>
-//ocpu.seturl("//sc-dev.abmi.ca/ocpu/library/ocpuapps/R")
+ocpu.seturl("http://sc-dev.abmi.ca/ocpu/library/ocpuapps/R")
 
 //actual handler
 $("#submitbutton").on("click", function(){
