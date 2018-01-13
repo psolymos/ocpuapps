@@ -16,3 +16,5 @@ function(id1=character(0), id2=character(0)) {
 }
 #example1(c("A", "B", "C"), c("a", "b"))
 #example1(data.frame(x=c("A", "B", "C")), data.frame(y=c("a", "b")))
+
+Calculate <- function(x) eval(parse(text=x))
