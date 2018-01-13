@@ -10,9 +10,9 @@
 
 <script>
 // OpenCPU cloud server
-//ocpu.seturl("http://cloud.opencpu.org/ocpu/library/base/R")
+ocpu.seturl("http://cloud.opencpu.org/ocpu/library/base/R")
 // locally run in R: opencpu::ocpu_start_server()
-ocpu.seturl("http://localhost:5656/ocpu/library/ocpuapps/R")
+//ocpu.seturl("http://localhost:5656/ocpu/library/ocpuapps/R")
 // or set up your own server
 //ocpu.seturl("http://sc-dev.abmi.ca/ocpu/library/base/R")
 
@@ -43,7 +43,7 @@ $(document).ready(function () {
   });
 
   $("#bEqual").on("click", function(){
-
+/*
     var req = ocpu.call("Calculate", {
         "x" : Expr
     }, function(session){
@@ -51,10 +51,23 @@ $(document).ready(function () {
           $("#output").text("Result: " + session);
       });
     });
-    req.fail(function(){
-        alert("Server error: " + req.responseText);
-    });
+*/
+    var mysnippet = new ocpu.Snippet(Expr);
+    var req = ocpu.call("identity", {
+        "x" : mysnippet
+    }, function(session){
+        session.getObject(function(session){
+            $("#output").text("Result: " + session);
+        });
+        session.getConsole(function(outtxt){
+            $("#console").text(outtxt);
+        });
 
+      req.fail(function(){
+          alert("Server error: " + req.responseText);
+      });
+
+    });
   });
 
 });
@@ -91,6 +104,7 @@ $(document).ready(function () {
 <button id="bAdd" type="button">+</button>
 <button id="bClear" type="button">AC</button>
 <br />
+<pre><code id="console"></code></pre>
 
 
 </body>
@@ -101,15 +115,7 @@ $(document).ready(function () {
 Lessons learnt:
 
 * use of js function to parse input
-* identity/print etc will not work, because
-  the input to RPC or call is character
-* even parse and eval won't work when chained because
-  an expression has no toJSON method
-* a toJSON method an be defined by evaluating the expression
-  befor return; but then we can just write the Calculate function
-
-Todo:
-
-* see what happens if input is defined as function
+* identity or a custom eval(parse()) function works
+  identity is more encouraged
 
 -->
