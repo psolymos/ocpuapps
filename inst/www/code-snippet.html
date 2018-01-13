@@ -32,8 +32,12 @@
   <pre><code id="output"></code></pre>
 
   <script>
-  //because identity is in base
+  // OpenCPU cloud server
   ocpu.seturl("http://cloud.opencpu.org/ocpu/library/base/R")
+  // locally run in R: opencpu::ocpu_start_server()
+  //ocpu.seturl("http://localhost:5656/ocpu/library/base/R")
+  // or set up your own server
+  //ocpu.seturl("http://sc-dev.abmi.ca/ocpu/library/base/R")
 
   //actual handler
   $("#submitbutton").on("click", function(){
