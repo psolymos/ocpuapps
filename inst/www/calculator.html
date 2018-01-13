@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>calculator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<script src="assets/jquery-1.11.1.min.js"></script>
+<script src="assets/opencpu-0.4.min.js"></script>
+
+<script>
+// OpenCPU cloud server
+//ocpu.seturl("http://cloud.opencpu.org/ocpu/library/base/R")
+// locally run in R: opencpu::ocpu_start_server()
+ocpu.seturl("http://localhost:5656/ocpu/library/ocpuapps/R")
+// or set up your own server
+//ocpu.seturl("http://sc-dev.abmi.ca/ocpu/library/base/R")
+
+//actual handler
+$(document).ready(function () {
+  var Expr = "";
+  function parseExpr(newval) {
+      Expr += newval;
+      $("#input").text("Expression: " + Expr);
+  }
+  $("#b0").on("click", function() {parseExpr("0")});
+  $("#b1").on("click", function() {parseExpr("1")});
+  $("#b2").on("click", function() {parseExpr("2")});
+  $("#b3").on("click", function() {parseExpr("3")});
+  $("#b4").on("click", function() {parseExpr("4")});
+  $("#b5").on("click", function() {parseExpr("5")});
+  $("#b6").on("click", function() {parseExpr("6")});
+  $("#b7").on("click", function() {parseExpr("7")});
+  $("#b8").on("click", function() {parseExpr("8")});
+  $("#b9").on("click", function() {parseExpr("9")});
+  $("#bDiv").on("click", function() {parseExpr("/")});
+  $("#bMult").on("click", function() {parseExpr("*")});
+  $("#bSub").on("click", function() {parseExpr("-")});
+  $("#bAdd").on("click", function() {parseExpr("+")});
+  $("#bClear").on("click", function() {
+    Expr = "";
+    $("#input").text("Expression: " + Expr);
+  });
+
+  $("#bEqual").on("click", function(){
+
+    var req = ocpu.call("Calculate", {
+        "x" : Expr
+    }, function(session){
+      session.getObject(function(session){
+          $("#output").text("Result: " + session);
+      });
+    });
+    req.fail(function(){
+        alert("Server error: " + req.responseText);
+    });
+
+  });
+
+});
+</script>
+
+</head>
+<body>
+
+<h1>Calculator</h1>
+
+<div id="input">Expression:</div>
+<br />
+<div id="output">Result:</div>
+<br />
+<br />
+<button id="b7" type="button">7</button>
+<button id="b8" type="button">8</button>
+<button id="b9" type="button">9</button>
+<button id="bDiv" type="button">&#247;</button>
+<br />
+<button id="b4" type="button">4</button>
+<button id="b5" type="button">5</button>
+<button id="b6" type="button">6</button>
+<button id="bMult" type="button">x</button>
+<br />
+<button id="b1" type="button">1</button>
+<button id="b2" type="button">2</button>
+<button id="b3" type="button">3</button>
+<button id="bSub" type="button">-</button>
+<br />
+<button id="b0" type="button">0</button>
+<button id="bDec" type="button">.</button>
+<button id="bEqual" type="button">=</button>
+<button id="bAdd" type="button">+</button>
+<button id="bClear" type="button">AC</button>
+<br />
+
+The lesson here: identical/print etc will not work, because
+the input to RPC or call is character.
+Even parse and eval won't work when chained because
+an expression has no toJSON method.
+
+A toJSON method an be defined by evaluating the expression befor return.
+But then we can just write the Calculate function.
+
+</body>
+</html>
