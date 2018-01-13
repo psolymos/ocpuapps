@@ -92,13 +92,24 @@ $(document).ready(function () {
 <button id="bClear" type="button">AC</button>
 <br />
 
-The lesson here: identical/print etc will not work, because
-the input to RPC or call is character.
-Even parse and eval won't work when chained because
-an expression has no toJSON method.
-
-A toJSON method an be defined by evaluating the expression befor return.
-But then we can just write the Calculate function.
 
 </body>
 </html>
+
+<!--
+
+Lessons learnt:
+
+* use of js function to parse input
+* identity/print etc will not work, because
+  the input to RPC or call is character
+* even parse and eval won't work when chained because
+  an expression has no toJSON method
+* a toJSON method an be defined by evaluating the expression
+  befor return; but then we can just write the Calculate function
+
+Todo:
+
+* see what happens if input is defined as function
+
+-->
