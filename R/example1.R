@@ -1,5 +1,5 @@
 example1 <-
-function(id1=character(0), id2=character(0)) {
+function(id1=character(0), id2=character(0), att="") {
     if (!is.null(dim(id1)))
         id1 <- id1[,1L]
     if (!is.null(dim(id2)))
@@ -12,6 +12,7 @@ function(id1=character(0), id2=character(0)) {
         stop("id2 must have length > 0")
     z <- matrix(1L:(n1 * n2), n1, n2)
     dimnames(z) <- list(id1, id2)
+    attr(z, "att") <- att
     z
 }
 #example1(c("A", "B", "C"), c("a", "b"))
