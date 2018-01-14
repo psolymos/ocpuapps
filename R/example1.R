@@ -18,3 +18,5 @@ function(id1=character(0), id2=character(0)) {
 #example1(data.frame(x=c("A", "B", "C")), data.frame(y=c("a", "b")))
 
 Calculate <- function(x) eval(parse(text=x))
+
+readCsv <- utils::read.csv
