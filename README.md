@@ -1,4 +1,4 @@
-# ocpuapps
+# ocpuapps: learning experiments
 
 > Simple OpenCPU Web Apps and UI Examples
 
