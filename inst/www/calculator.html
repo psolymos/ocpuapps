@@ -37,9 +37,12 @@ $(document).ready(function () {
   $("#bMult").on("click", function() {parseExpr("*")});
   $("#bSub").on("click", function() {parseExpr("-")});
   $("#bAdd").on("click", function() {parseExpr("+")});
+  $("#bDec").on("click", function() {parseExpr(".")});
   $("#bClear").on("click", function() {
     Expr = "";
-    $("#input").text("Expression: " + Expr);
+    $("#input").text("Expression: ");
+    $("#output").text("Result: ");
+    $("#console").text("")
   });
 
   $("#bEqual").on("click", function(){
