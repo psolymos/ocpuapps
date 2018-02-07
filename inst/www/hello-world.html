@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+  <head>
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://cdn.opencpu.org/opencpu-0.4.js"></script>
+  </head>
+  <body>
+    <h1 id="output"></h1>
+    <button id="submitbutton" type="button">Click me!</button>
+    <script>
+      ocpu.seturl("http://cloud.opencpu.org/ocpu/library/base/R")
+      var mydata = "Hello World!";
+      $("#submitbutton").on("click", function(){
+        ocpu.rpc("print", {
+            x : mydata
+          }, function(output){
+            $("#output").text(output);
+          });
+      });
+    </script>
+  </body>
+</html>

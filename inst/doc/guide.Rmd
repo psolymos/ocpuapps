@@ -1,0 +1,208 @@
+---
+title: "OpenCPU guide"
+author: "Peter"
+date: "2/6/2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(eval=FALSE, echo=FALSE)
+```
+
+## What this doc is about
+
+This document outlines how to work with OpenCPU on a local machine
+when developing application workflows (R) and user interface
+(HTML, JS; we won't use CSS for now).
+We will assume that all R functionality that is needed for the app
+already exists, i.e. we will not cover R package development
+at this stage. We will also use local single-user server and 
+the public ocpu cloud server,
+i.e. not cover remote hosting and server administration.
+We will purely focus on the interaction
+between the the UI front-end and the OpenCPU server back-end.
+
+## Prerequisites
+
+* R installed,
+* **opencpu** package installed via `install.packages("opencpu")`,
+* text editor (RStudio's editor is fine, or Atom, Brackets, etc.),
+* a modern browser with developer tools (e.g. Chrome) with internet connection.
+
+## Hello World!
+
+Create a file called `hello-world.html` with the following content:
+
+```
+<!DOCTYPE html>
+  <head>
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://cdn.opencpu.org/opencpu-0.4.js"></script>
+  </head>
+  <body>
+    <h1 id="output"></h1>
+    <button id="submitbutton" type="button">Click me!</button>
+    <script>
+      ocpu.seturl("http://cloud.opencpu.org/ocpu/library/base/R")
+      var mydata = "Hello World!";
+      $("#submitbutton").on("click", function(){
+        ocpu.rpc("print", {
+            x : mydata
+          }, function(output){
+            $("#output").text(output);
+          });
+      });
+    </script>
+  </body>
+</html>
+```
+
+Now let's inspect the code line-by-line: the following skeleton
+is standard HTML, the head declares everything that we can't see (meta info),
+the body has everything that we see in the browser. This is a pretty bare-bone
+file for the sake of simplicity:
+
+```
+<!DOCTYPE html>
+  <head>
+  
+    ...
+
+  </head>
+  <body>
+
+    ...
+
+  </body>
+</html>
+```
+
+The 2 lines in the head will load prerequisites for the
+OpenCPU JavaScript API to work, namely jQuery (which is 
+a JS library that defines many of the behaviour os the
+HTML elements, e.g. events like clicking a button):
+
+```
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://cdn.opencpu.org/opencpu-0.4.js"></script>
+```
+
+Within the body we have 2 elements, `h1` (level 1 heading)
+with nothing in between its opening `<h1>` and closing `</h1> tags,
+and with ID `"output"` (usually there is some text between the tags).
+
+The other element is a button, opening and closing tags,
+with ID `"submitbutton":
+
+```
+    <h1 id="output"></h1>
+    <button id="submitbutton" type="button">Click me!</button>
+```
+
+The last piece in our file is a script inside the html body
+between the tags `<script> ... </script>`.
+The point of placing this script at the very end of the file is
+that jQuery and opencpu JS files load first,
+and the rest of the page is also loaded.
+This way the JS actions defined in the script (so called handlers)
+will be bound to the html elemnts (referenced by their IDs).
+
+This line sets the OpenCPU URL to the cloud server.
+This is called cross-domain OpenCPU request, or [CORS](https://www.opencpu.org/jslib.html#lib-cors).
+So this is where OpenCPU will look for the R code to use.
+We set it to **base** R for now (`/library/base/R`, no backslash at the end).
+The base of the URL (`//cloud.opencpu.org/ocpu`) is the root
+of the OpenCPU server.
+
+```
+      ocpu.seturl("http://cloud.opencpu.org/ocpu/library/base/R")
+```
+
+Next, we define a variable called `mydata`:
+
+```
+      var mydata = "Hello World!";
+```
+
+In the remaining part of the script, we use the `ocpu.rpc` function.
+Its first argument is the name of the R function we want to call,
+this must be exported by the R package in question (**base** in this case).
+We'll use the `print` function.
+
+The second argument is a list of arguments passed to the R function,
+in JSON format.
+
+The third argument is a so called callback function
+that defines what to do with the R function's return value.
+In thus case, it takes the output and displays it as text within the `h1` 
+element.
+
+Note also that all this `ocpu.rpc` is wrapped
+within `$("#submitbutton").on("click", function(){ ... });`
+that binds the click on the `button` element to the server side call:
+
+```
+      $("#submitbutton").on("click", function(){
+        ocpu.rpc("print", {
+            x : mydata
+          }, function(output){
+            $("#output").text(output);
+          });
+      });
+```
+
+Next we open the html file in Chrome, then open developer tools
+from its menu (View > Developer > Developer Tools).
+Clicking on the Console tab, we should be seeing something like this:
+
+```
+Setting path to CORS server http://cloud.opencpu.org/ocpu/library/base/R
+opencpu-0.4.min.js:27 Path updated. Available objects/functions:
+^
+~
+<
+<<-
+
+...
+
+xzfile
+zapsmall
+```
+
+By clicking the button, we should now see the 'Hello World!' header.
+
+## Using single user server
+
+Load the **opencpu** package and start 
+
+```{r}
+library(opencpu)
+ocpu_start_server()
+```
+
+Now open the page `http://localhost:5656/ocpu`
+in the browser. You should see a test page where you can make
+requests to the local OpenCPU server. If that is the case,
+let's modify the html page and replace the line
+`ocpu.seturl("http://cloud.opencpu.org/ocpu/library/base/R")`
+with
+`ocpu.seturl("http://localhost:5656/ocpu/library/base/R")`.
+Then reload the page, click the button and see what happens.
+It should be the same as the cloud server.
+Hit Ctrl+C or Esc to stop the local server.
+
+## Exercise 1
+
+Change `mydata` to a numeric vector
+(`var mydata = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];`)
+and have the R function `sd` in the **stats** package to calculate
+its standard deviation. Put that inside of a paragraph
+instead of a heading (use the `<p> ... </p>` tag pair) following the button.
+
+## Exercise 2
+
+Use the `rnorm` function from the **stats** package
+to generate 10 random numbers with mean -1 and standard deviation 3,
+similarly to `rnorm(n = 10, mean = -1, sd = 3)`. Again, use
+paragraph instead of heading to display the results.
