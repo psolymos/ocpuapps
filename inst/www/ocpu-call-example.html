@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>OpenCPU call example</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<script src="assets/jquery-1.11.1.min.js"></script>
+<script src="assets/opencpu-0.4.min.js"></script>
+
+
+</head>
+<body>
+
+    <h1>OpenCPU call example</h1>
+
+<textarea id="input" rows="4" cols="50">
+## define a vector to be sorted
+c(1, 5, 2, 4, 3) 
+</textarea> 
+<br /> 
+<button id="submitbutton" type="button">Call R</button> 
+<br />
+
+<div id="d1"></div><br />
+<div id="d2"></div><br />
+<div id="d3"></div><br />
+<div id="d4"></div><br />
+<div id="d5"></div><br />
+<div id="d6"></div><br />
+<div id="d7"></div><br />
+
+    
+<script>
+//because sort is in base
+ocpu.seturl("//public.opencpu.org/ocpu/library/base/R")
+
+//actual handler
+$("#submitbutton").on("click", function(){
+
+    // arguments
+    var mysnippet = new ocpu.Snippet($("#input").val());
+    
+    // disable button
+    $("button").attr("disabled", "disabled");
+
+    // perform the request
+    var req = ocpu.call("sort", {
+        "x" : mysnippet
+    }, function(session){
+        $("#d1").text("session.getKey(): " + session.getKey());
+        $("#d2").text("session.getLoc(): " + session.getLoc());
+        $("#d3").text("session.getFileURL(): " + session.getFileURL( "R" ));
+        
+        session.getObject(function(session){
+            $("#d4").text("session.getObject(): " + session);
+        });
+        // Defaults to .val which means the function return value
+        session.getConsole(function(outtxt){
+            $("#d5").text("session.getConsole(): " + outtxt);
+        });
+        session.getStdout(function(outtxt){
+            $("#d6").text("session.getStdout(): " + outtxt);
+        });
+        // working dir is /ocpu/tmp/{key}/files/*
+        session.getFile("DESCRIPTION", function(outtxt){
+            $("#d7").text("session.getFile(): " + outtxt);
+        });
+    });
+        
+    // if R returns an error, alert the error message
+    req.fail(function(){
+        alert("Server error: " + req.responseText);
+    });      
+    // restore button as active
+    req.always(function(){
+        $("button").removeAttr("disabled");    
+    });
+    
+});    
+</script>    
+</body>
+</html>
