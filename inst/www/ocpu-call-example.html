@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
 <script src="assets/jquery-1.11.1.min.js"></script>
-<script src="assets/opencpu-0.4.min.js"></script>
+<script src="assets/opencpu-0.5.js"></script>
 
 
 </head>
@@ -14,12 +14,20 @@
 
     <h1>OpenCPU call example</h1>
 
+Read about 
+<a href="https://webdesign.tutsplus.com/tutorials/an-introduction-to-ajax-for-front-end-designers--cms-25099">AJAX</a>,
+<a href="https://webdesign.tutsplus.com/tutorials/an-example-of-ajax-with-vanilla-javascript--cms-25763">AJAX with valinlla JS</a>, and 
+<a href="https://webdesign.tutsplus.com/tutorials/a-beginners-guide-to-ajax-with-jquery--cms-25126">AJAX with jQuery</a>.
+<br /> 
+<br /> 
+    
 <textarea id="input" rows="4" cols="50">
 ## define a vector to be sorted
 c(1, 5, 2, 4, 3) 
 </textarea> 
 <br /> 
 <button id="submitbutton" type="button">Call R</button> 
+<br />
 <br />
 
 <div id="d1"></div><br />
@@ -29,6 +37,7 @@ c(1, 5, 2, 4, 3)
 <div id="d5"></div><br />
 <div id="d6"></div><br />
 <div id="d7"></div><br />
+<div id="d8"></div><br />
 
     
 <script>
@@ -50,21 +59,24 @@ $("#submitbutton").on("click", function(){
     }, function(session){
         $("#d1").text("session.getKey(): " + session.getKey());
         $("#d2").text("session.getLoc(): " + session.getLoc());
-        $("#d3").text("session.getFileURL(): " + session.getFileURL( "R" ));
+        $("#d3").text("session.getFileURL(path): " + session.getFileURL( "R" ));
         
         session.getObject(function(session){
-            $("#d4").text("session.getObject(): " + session);
+            $("#d4").text("session.getObject(success): " + session);
         });
         // Defaults to .val which means the function return value
         session.getConsole(function(outtxt){
-            $("#d5").text("session.getConsole(): " + outtxt);
+            $("#d5").text("session.getConsole(success): " + outtxt);
         });
         session.getStdout(function(outtxt){
-            $("#d6").text("session.getStdout(): " + outtxt);
+            $("#d6").text("session.getStdout(success): " + outtxt);
         });
         // working dir is /ocpu/tmp/{key}/files/*
         session.getFile("DESCRIPTION", function(outtxt){
-            $("#d7").text("session.getFile(): " + outtxt);
+            $("#d7").text("session.getFile(path, success): " + outtxt);
+        });
+        session.getSource(function(outtxt){
+            $("#d8").text("session.getSource(success): " + outtxt);
         });
     });
         
