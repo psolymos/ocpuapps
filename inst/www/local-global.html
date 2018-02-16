@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>OpenCPU local global</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<script src="assets/jquery-1.11.1.min.js"></script>
+<script src="assets/opencpu-0.5.js"></script>
+
+</head>
+<body>
+
+    <h1>OpenCPU local global</h1>
+<br />
+<br />
+    
+<button id="postbutton" type="button">Test!</button> <br><br>
+
+Session ID: <tt id="key"></tt> <br >
+Session Location: <tt id="location"></tt> 
+
+<pre><code id="output"></code></pre> 
+
+<button id="getbutton" type="button" disabled="disabled">Get Object</button> 
+<br />
+<br />
+<div id="mydiv"></div>
+    
+<script>
+//set CORS to call "appdemo" package on public server
+ocpu.seturl("//public.opencpu.org/ocpu/library/stats/R")
+
+//global var
+var mysession;
+
+//calls R function: stats::rnorm(n=100, mean=runif(1)):
+$("#postbutton").click(function(){
+    var req = ocpu.call("rnorm", {n: 100, mean: 10}, function(session){
+        //assign to global var
+        mysession = session;
+        
+        //read the session properties (just for fun)
+        $("#key").text(mysession.getKey());
+        $("#location").text(mysession.getLoc());
+        
+        //retrieve session console (async)
+        mysession.getConsole(function(outtxt){
+            $("#output").text(outtxt);
+        });
+        
+        //enable the other button
+        $("#getbutton").removeAttr("disabled");
+    }).fail(function(){
+        alert("Error: " + req.responseText);
+    });
+});
+
+$("#getbutton").click(function(){
+    //retrieve object (async)
+    mysession.getObject(function(data){
+        //data is the object returned by the R function
+        //alert("Array of length " + data.length + ".\nFirst few values:" + data.slice(0,3)); 
+        $("#mydiv").text("Array of length " + data.length + ".\nFirst few values:" + data.slice(0,3));
+    });
+});        
+</script>    
+</body>
+</html>
+<!-- 
+
+-->

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>OpenCPU RPC</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<script src="assets/jquery-1.11.1.min.js"></script>
+<script src="assets/opencpu-0.5.js"></script>
+
+</head>
+<body>
+
+    <h1>OpenCPU RPC</h1>
+<br />
+Difference from rplot and call: rpc returns json output and not session object.
+The ocpu.rpc callback argument is a JSON object containing the data returned by the R function.
+The ocpu.call (rplot) callback argument is a Session object.
+<br />
+<br />
+    
+<button id="submitbutton" type="button">Call R</button> 
+<br />
+<br />
+<div id="location"></div>
+<br />
+<br />
+<div id="mydiv"></div>
+
+    
+<script>
+//because sort is in base
+ocpu.seturl("//public.opencpu.org/ocpu/library/stats/R")
+
+//actual handler
+$("#submitbutton").on("click", function(){
+    
+    // disable button
+    $("button").attr("disabled", "disabled");
+    
+    var mydata = [1.6301,0.2973,-1.4883,1.3515,0.3706,-0.3495,0.8966,-0.3146,0.8439,0.0895,0.008,-0.5806,0.2843,0.1847,0.1342,0.7898,-0.2361,0.0983,-1.2752,1.9727,2.2866,-0.6232,0.195,-0.7305,0.6565,-0.9256,0.716,-0.8731,-0.1302,-0.1754,-1.0827,-0.6996,1.0169,-1.664,-0.6354,1.1611,-1.1488,-0.0852,2.1909,-0.8636,-0.5489,-1.4305,0.7322,1.8152,0.0805,0.232,-0.3666,-1.7952,-0.7219,0.3416,0.8302,-1.2435,1.504,1.3724,-0.9442,0.4723,1.1093,-1.2774,0.9805,-1.1597,-0.9252,0.7145,-0.3092,-0.2872,0.5117,0.0773,0.1338,1.3739,0.1642,-0.4227,0.9932,0.4275,-0.5612,-0.9541,0.1304,-0.0896,-0.8394,0.3103,0.801,0.3917,-0.506,-0.3116,-0.7895,1.3263,-2.5633,1.1525,0.4715,0.2925,-0.6016,0.7494,-1.028,-2.5674,-0.7058,1.4867,-1.4667,0.837,-0.0711,2.4904,-0.9441,-1.6649];
+    
+    //call R function: stats::sd(x=data)
+    var req = ocpu.rpc("sd",{
+        x : mydata
+    }, function(output){
+        //alert("Standard Deviation equals: " + output);
+        $("#mydiv").text("Standard Deviation equals: " + output);
+    });
+    
+    // if R returns an error, alert the error message
+    req.fail(function(){
+        alert("Server error: " + req.responseText);
+    });      
+    req.always(function(){
+        $("button").removeAttr("disabled");    
+    });
+    
+});    
+</script>    
+</body>
+</html>
+<!-- 
+
+-->

@@ -30,6 +30,7 @@ c(1, 5, 2, 4, 3)
 <br />
 <br />
 
+<div id="status"></div><br />
 <div id="d1"></div><br />
 <div id="d2"></div><br />
 <div id="d3"></div><br />
@@ -61,10 +62,12 @@ $("#submitbutton").on("click", function(){
         $("#d2").text("session.getLoc(): " + session.getLoc());
         $("#d3").text("session.getFileURL(path): " + session.getFileURL( "R" ));
         
+        // Defaults to .val which means the function return value:
+        // url = this.getLoc() + "R/" + name + "/json"
+        // data arg is used in $.get(url, data, success)
         session.getObject(function(session){
             $("#d4").text("session.getObject(success): " + session);
         });
-        // Defaults to .val which means the function return value
         session.getConsole(function(outtxt){
             $("#d5").text("session.getConsole(success): " + outtxt);
         });
@@ -85,6 +88,9 @@ $("#submitbutton").on("click", function(){
         alert("Server error: " + req.responseText);
     });      
     // restore button as active
+    req.done(function(){
+        $("#status").text(".done: call successfilly processed");    
+    });
     req.always(function(){
         $("button").removeAttr("disabled");    
     });
@@ -93,3 +99,7 @@ $("#submitbutton").on("click", function(){
 </script>    
 </body>
 </html>
+<!-- 
+the .fail and .always etc methods are for the jqXHR session object returned by ocpu.call,
+there is also .done (=success).
+-->
