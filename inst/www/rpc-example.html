@@ -30,8 +30,9 @@ The ocpu.call (rplot) callback argument is a Session object.
     
 <script>
 //because sort is in base
-ocpu.seturl("//public.opencpu.org/ocpu/library/stats/R")
-
+//ocpu.seturl("//public.opencpu.org/ocpu/library/stats/R")
+ocpu.seturl("//sc-dev.abmi.ca/ocpu/library/stats/R")
+    
 //actual handler
 $("#submitbutton").on("click", function(){
     
@@ -46,16 +47,16 @@ $("#submitbutton").on("click", function(){
     }, function(output){
         //alert("Standard Deviation equals: " + output);
         $("#mydiv").text("Standard Deviation equals: " + output);
+        console.log("output: " + output);
     });
     
     // if R returns an error, alert the error message
     req.fail(function(){
         alert("Server error: " + req.responseText);
-    });      
+    });  
     req.always(function(){
         $("button").removeAttr("disabled");    
     });
-    
 });    
 </script>    
 </body>

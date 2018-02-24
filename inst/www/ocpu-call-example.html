@@ -87,10 +87,10 @@ $("#submitbutton").on("click", function(){
     req.fail(function(){
         alert("Server error: " + req.responseText);
     });      
-    // restore button as active
     req.done(function(){
-        $("#status").text(".done: call successfilly processed");    
+        $("#status").text(".done: call successfully processed");    
     });
+    // restore button as active
     req.always(function(){
         $("button").removeAttr("disabled");    
     });
