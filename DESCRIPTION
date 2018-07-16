@@ -1,8 +1,8 @@
 Package: ocpuapps
 Type: Package
 Title: Simple OpenCPU Web Apps and UI Examples
-Version: 0.0-1
-Date: 2018-01-28
+Version: 0.0-2
+Date: 2018-07-15
 Author: Peter Solymos [cre, aut]
 Maintainer: Peter Solymos <psolymos@gmail.com>
 Description: Simple OpenCPU web apps and UI examples.
