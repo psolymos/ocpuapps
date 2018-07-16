@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>experiments</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+
+let testhtml5 = () => {
+    if (!(typeof document.createElement('canvas').getContext === "function")) {
+        alert("File uploads require HTML5. It looks like you are using an outdated browser that does not support HTML5; please install Firefox, Chrome or Internet Explorer 10+");
+        throw "HTML5 required.";
+    }
+}
+testhtml5();
+
+let testaxios = () => {
+    if (!window.axios) {
+        alert("Could not find axios! The HTML must include axios.js before vaocpu.js!");
+    }
+}
+testaxios();
+
+// get request
+axios.get("http://sc-dev.abmi.ca/ocpu/library/stats/R/rnorm/print")
+.then((res) => {
+    console.log("GET RESPONSE RECEIVED: ", res);
+})
+.catch((err) => {
+    console.log("GET ERROR: ", err);
+})
+
+//post request
+let session;
+axios.post("http://sc-dev.abmi.ca/ocpu/library/stats/R/rnorm/json",
+    {"n":3, "mean":10, "sd":10})
+.then((res) => {
+    console.log("POST RESPONSE RECEIVED: ", res);
+    session = res;
+})
+.catch((err) => {
+    console.log("POST ERROR: ", err);
+})
+
+/*
+let url = session.headers.location + "R/.val/json";
+let value = axios.get(get_link_val(session))
+.then((res) => {
+    console.log("GET RESPONSE RECEIVED 2: ", res);
+})
+.catch((err) => {
+    console.log("GET ERROR 2: ", err);
+})
+*/
+
+// make a promise or condition: session is not yet available
+//console.log(session);
+//console.log(session.headers);
+</script>
+
+</head>
+<body>
+
+
+</body>
+</html>
