@@ -1,4 +1,4 @@
-export(example1, Calculate, readCsv)
+export(example1, Calculate, readCsv, read.csv, cor)
 
 importFrom(utils, read.csv)
 importFrom(stats, cor)
