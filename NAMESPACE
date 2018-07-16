@@ -1,1 +1,4 @@
 export(example1, Calculate, readCsv)
+
+importFrom(utils, read.csv)
+importFrom(stats, cor)

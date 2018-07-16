@@ -21,3 +21,8 @@ function(id1=character(0), id2=character(0), att="") {
 Calculate <- function(x) eval(parse(text=x))
 
 readCsv <- utils::read.csv
+
+## exports
+read.csv <- utils::read.csv
+cor <- stats::cor
+
