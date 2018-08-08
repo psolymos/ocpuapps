@@ -26,3 +26,8 @@ readCsv <- utils::read.csv
 read.csv <- utils::read.csv
 cor <- stats::cor
 
+pca <- function(x) {
+    z <- rda(x)
+    scores(z, 1:ncol(x))$sites
+}
+

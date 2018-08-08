@@ -11,4 +11,4 @@ BugReports: https://github.com/psolymos/ocpuapps/issues
 License: GPL-2
 LazyLoad: yes
 LazyData: true
-Depends: sendmailR, jsonlite
+Depends: sendmailR, jsonlite, vegan
